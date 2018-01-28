@@ -15,21 +15,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var port     = process.env.PORT || 8080; // set our port
+var taskCtr  = 0;
 
-// DATABASE SETUP
-var mongoose   = require('mongoose');
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
-
-// Handle the connection event
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-
-db.once('open', function() {
-  console.log("DB connection alive");
-});
-
-// Bear models lives here
-var Bear     = require('./app/models/bear');
+// Import Task APIs
+var tasks     = require('./tasks');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -49,77 +38,59 @@ router.get('/', function(req, res) {
 	res.json({ message: 'hooray! welcome to our api!' });	
 });
 
-// on routes that end in /bears
+// on routes that end in /tasks
 // ----------------------------------------------------
-router.route('/bears')
+router.route('/tasks')
 
-	// create a bear (accessed at POST http://localhost:8080/bears)
+	// create a new task (accessed at POST http://localhost:8080/tasks)
 	.post(function(req, res) {
-		
-		var bear = new Bear();		// create a new instance of the Bear model
-		bear.name = req.body.name;  // set the bears name (comes from the request)
-
-		bear.save(function(err) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Bear created!' });
-		});
-
-		
+          taskCtr++;
+          var task = {
+            uri: '/tasks/'+taskCtr,
+            label: req.body.label + '',
+            status: req.body.status || 'ok',
+            user : req.body.user || 'temp'
+          }
+          tasks.addTask(task);
+	  res.json({ message: 'Task '+ taskCtr + ' created!'});
 	})
 
-	// get all the bears (accessed at GET http://localhost:8080/api/bears)
+	// get all the tasks (accessed at GET http://localhost:8080/tasks)
 	.get(function(req, res) {
-		Bear.find(function(err, bears) {
-			if (err)
-				res.send(err);
+          var taskList;
+          var user = req.query.user;
 
-			res.json(bears);
-		});
+          taskList = tasks.getTasks(user);
+	  res.json(taskList);
 	});
 
-// on routes that end in /bears/:bear_id
+// on routes that end in /tasks/:task_id
 // ----------------------------------------------------
-router.route('/bears/:bear_id')
+router.route('/tasks/:task_id')
 
-	// get the bear with that id
+	// get the task with that id
 	.get(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
-			if (err)
-				res.send(err);
-			res.json(bear);
-		});
+          var task;
+          task = tasks.getTask(req.url);
+          res.json(task);
 	})
 
-	// update the bear with this id
+	// update the task with this id
 	.put(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
-
-			if (err)
-				res.send(err);
-
-			bear.name = req.body.name;
-			bear.save(function(err) {
-				if (err)
-					res.send(err);
-
-				res.json({ message: 'Bear updated!' });
-			});
-
-		});
+          var task = {
+            uri: req.url,
+            label: req.body.label + '',
+            status: req.body.status || 'ok',
+            user : req.body.user || 'temp'
+          }
+          tasks.updateTask(task);
+          res.json({message: 'Task ' + req.url + ' edited!'});
 	})
 
-	// delete the bear with this id
+	// delete the task with this id
 	.delete(function(req, res) {
-		Bear.remove({
-			_id: req.params.bear_id
-		}, function(err, bear) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Successfully deleted' });
-		});
+          tasks.deleteTask(req.url);
+	  res.json({ message: 'Task ' + req.url + ' deleted!' });
 	});
 
 
