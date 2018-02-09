@@ -61,11 +61,7 @@ router.route('/tasks')
 
   // get all the tasks (accessed at GET http://localhost:8080/tasks)
   .get(function(req, res) {
-    var taskList;
     var user = req.query.user;
-
-    taskList = tasks.getTasks(user);
-    res.json(taskList);
   });
 
 // on routes that end in /tasks/:task_id
@@ -75,34 +71,16 @@ router.route('/tasks/:task_id')
   // get the task with that id
   .get(function(req, res) {
     const index = req.params.task_id;
-    var task;
-    task = tasks.getTask(index);
-    res.json(task);
   })
 
   // update the task with this id
   .put(function(req, res) {
     const index = req.params.task_id;
-    var task = {
-      uri: req.url,
-      index: index,
-      label: req.body.label + '',
-      status: req.body.status || 'ok',
-      user: req.body.user || 'temp'
-    }
-    tasks.updateTask(task);
-    res.json({
-      message: 'Task ' + index + ' edited!'
-    });
   })
 
   // delete the task with this id
   .delete(function(req, res) {
     const index = req.params.task_id;
-    tasks.deleteTask(index);
-    res.json({
-      message: 'Task ' + index + ' deleted!'
-    });
   });
 
 
