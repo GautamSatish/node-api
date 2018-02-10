@@ -22,6 +22,7 @@ var taskCtr = 0;
 
 // Import Task APIs
 var tasks = require('./tasks');
+var mtasks = require('./mongo_tasks');
 
 // create our router
 var router = express.Router();
@@ -53,6 +54,7 @@ router.route('/tasks')
       user: req.body.user || 'gautam'
     }
     tasks.addTask(task);
+    mtasks.addTask(task); // Add into MongoDB as well.
     res.json({
       message: 'Task ' + taskCtr + ' created!'
     });
