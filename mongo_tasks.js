@@ -13,7 +13,6 @@ const collName = 'your_collection';
 // Insert a document into the collection
 
 const insertDocument = function(db, doc, callback) {
-  doc._id = doc.index;
   db.collection(collName).insertOne(doc, function(err, result) {
     assert.equal(null, err);
     assert.equal(1, result.insertedCount);
