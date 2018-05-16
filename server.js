@@ -35,7 +35,84 @@ router.use(function(req, res, next) {
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
   res.json({
-    message: 'Welcome to the To-Do api!'
+    message: 'Welcome to the To-Do api!',
+    actions:[
+      {
+        action: 'Get all tasks.',
+        uri: '/api/tasks',
+        method: 'GET',
+        parameters: [
+          {
+            name: 'user',
+            type: 'string',
+            location: 'query',
+            description: 'Filter by user'
+          }
+        ]
+      },
+      {
+        action: 'Get a task.',
+        uri: '/api/tasks/<id>',
+        method: 'GET',
+        parameters: []
+      },
+      {
+        action: 'Delete a task.',
+        uri: '/api/tasks/<id>',
+        method: 'DELETE',
+        parameters: []
+      },
+      {
+        action: 'Create a task.',
+        uri: '/api/tasks',
+        method: 'POST',
+        parameters: [
+          {
+            name: 'label',
+            type: 'string',
+            location: 'body',
+            description: 'Name of the ToDo item'
+          },
+          {
+            name: 'status',
+            type: 'string',
+            location: 'body',
+            description: 'ok|warning|critical'
+          },
+          {
+            name: 'user',
+            type: 'string',
+            location: 'body',
+            description: 'ToDo item owner'
+          },
+        ]
+      },
+      {
+        action: 'Modify a task.',
+        uri: '/api/tasks/<id>',
+        method: 'PUT',
+        parameters: [
+          {
+            name: 'label',
+            type: 'string',
+            location: 'body',
+            description: 'Name of the ToDo item'
+          },
+          {
+            name: 'status',
+            type: 'string',
+            location: 'body',
+            description: 'ok|warning|critical'
+          },
+          {
+            name: 'user',
+            type: 'string',
+            location: 'body',
+            description: 'ToDo item owner'
+          },
+        ]
+      },
+    ]
   });
 });
 
@@ -105,6 +182,14 @@ router.route('/tasks/:task_id')
     });
   });
 
+router.route('/someData')
+
+  .get(function(req, res) {
+    var data = {
+      value: Math.floor((Math.random() * 1000000) + 1)
+    };
+    res.json(data);
+  });
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
