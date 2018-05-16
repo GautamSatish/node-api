@@ -10,7 +10,7 @@ Using the new Express 4.0 Router to build an API
 
 ## Installation
 
-- Clone the repo: `git clone https://github.com/GautamSatish/node-api.git`
+- Clone the repo: `git clone https://github.com/GautamSatish/restful_web_services.git`
 - Install dependencies: `npm install`
 - Start the server: `node server.js`
 
