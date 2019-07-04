@@ -6,14 +6,18 @@
     "url": "git://github.com/scotch-io/node-token-authentication"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Chris Sevilleja <scotch.io>",
   "license": "MIT",
   "dependencies": {
     "express": "~4.16.1",
     "morgan": "~1.9.0",
-    "mongoose" : "~4.13.17",
-    "body-parser": "~1.18.2"
-  }
+    "mongoose": "~4.13.17",
+    "body-parser": "~1.18.2",
+    "snyk": "^1.189.0"
+  },
+  "snyk": true
 }
